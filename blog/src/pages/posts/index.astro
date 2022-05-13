@@ -1,8 +1,7 @@
 ---
 // Component Imports
-import BaseHead from '../components/BaseHead.astro';
-import BlogHeader from '../components/BlogHeader.astro';
-import BlogPostPreview from '../components/BlogPostPreview.astro';
+import BlogHeader from '@/components/BlogHeader.astro'
+import BaseHead from '@/components/BaseHead.astro'
 
 // Component Script:
 // You can write any JavaScript/TypeScript that you'd like here.
@@ -13,10 +12,27 @@ let description = 'The perfect starter for your perfect blog.';
 let permalink = 'https://example.com/';
 
 // Data Fetching: List all Markdown posts in the repo.
+async function getPosts() {
+	const response = await fetch(`${import.meta.env.CMS_URI}/api/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      query: `{
+		posts {
+			title 
+			slug
+		}
+      }`
+    })
+  })
+  const {data, errors} = await response.json() 
+  return data.posts
+}
 
-let allPosts = await Astro.glob('./posts/*.md');
-allPosts = allPosts.sort((a, b) => new Date(b.frontmatter.publishDate).valueOf() - new Date(a.frontmatter.publishDate).valueOf());
-
+let allPosts = await getPosts()
+console.log(allPosts)
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -70,7 +86,11 @@ allPosts = allPosts.sort((a, b) => new Date(b.frontmatter.publishDate).valueOf()
 					<p>{description}</p>
 				</section>
 				<section aria-label="Blog post list">
-					{allPosts.map((p) => <BlogPostPreview post={p} />)}
+					{allPosts.map(p => (
+						<li>
+							<a href={`/posts/${p.slug}`}>{p.title}</a>
+						</li>
+					))}
 				</section>
 			</main>
 		</div>
