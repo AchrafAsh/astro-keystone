@@ -10,8 +10,7 @@ export async function getStaticPaths() {
     body: JSON.stringify({
       query: `{
         posts {
-          title
-          id
+          slug
         }
       }`
     })
@@ -19,24 +18,24 @@ export async function getStaticPaths() {
   const {data, errors} = await response.json()
   if(errors) console.log(errors, errors[0].extensions.exception)
   
-  return data.posts.map((p) => ({ params: { slug: p.id } }))
+  return data.posts.map((p) => ({ params: { slug: p.slug } }))
 }
 
 
-async function getPost(id:string) {
+async function getPost(slug:string) {
   const response = await fetch(`${import.meta.env.CMS_URI}/api/graphql`, {
     method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query: `query GET_POST($id: ID!){
-          post(where: {id: $id}) {
+        query: `query GET_POST($slug: String!){
+          post(where: {slug: $slug}) {
             title
             content {document}
           }
         }`,
-        variables: { id }
+        variables: { slug }
       })
     })
     const {data, errors} = await response.json()
@@ -47,7 +46,6 @@ async function getPost(id:string) {
 
 const {slug} = Astro.params
 const {title, content} = await getPost(slug as string)
-console.log({ content })
 ---
 
 <html>

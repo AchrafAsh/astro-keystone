@@ -1,6 +1,4 @@
 /*
-Welcome to the schema! The schema is the heart of Keystone.
-
 Here we define our 'lists', which will then be used both for the GraphQL
 API definition, our database tables, and our Admin UI layout.
 
@@ -9,8 +7,10 @@ A list: A definition of a collection of fields with a name. For the starter
   we have `User`, `Post`, and `Tag` lists.
 A field: The individual bits of data on your list, each with its own type.
   you can see some of the lists in what we use below.
-
 */
+
+import dotenv from 'dotenv'
+dotenv.config()
 
 // Like the `config` function we use in keystone.ts, we use functions
 // for putting in our config so we get useful errors. With typescript,
@@ -72,6 +72,11 @@ export const lists: Lists = {
   Post: list({
     fields: {
       title: text(),
+      slug: text({
+        validation: { isRequired: true },
+        isIndexed: 'unique',
+        isFilterable: true
+      }),
       // Having the status here will make it easy for us to choose whether to display
       // posts on a live site.
       status: select({
@@ -126,7 +131,7 @@ export const lists: Lists = {
           inlineCreate: { fields: ['name'] },
         },
         many: true,
-      }),
+      })
     },
   }),
   // Our final list is the tag list. This field is just a name and a relationship to posts

@@ -6,4 +6,4 @@
 - [ ] Page navigation (next/previous post)
 - [ ] Post layout (styling, using components with keystone document-renderer)
 - [ ] Create a sitemap for astro
-- [ ] Add slug to posts in Keystone
+- [x] Add slug to posts in Keystone
