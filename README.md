@@ -3,7 +3,7 @@
 ## Todos
 
 - [x] List of posts on the index page
-- [ ] Page navigation (next/previous post)
-- [ ] Post layout (styling, using components with keystone document-renderer)
-- [ ] Create a sitemap for astro
 - [x] Add slug to posts in Keystone
+- [x] Create a sitemap for astro
+- [ ] Deploy (with Vercel?)
+- [ ] Page navigation (next/previous post)
